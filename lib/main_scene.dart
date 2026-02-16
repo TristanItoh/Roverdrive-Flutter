@@ -160,218 +160,251 @@ class _HomeState extends State<MainScene> with TickerProviderStateMixin {
               alignment: Alignment.center,
               children: [
                 Positioned(
-                  top: screenHeight * 0.37,
+                  top: screenHeight * 0.36,
                   child: Container(
-                    width: screenWidth * 0.7,
-                    height: screenHeight * 0.7,
+                    width: screenWidth * 0.72,
+                    height: screenHeight * 0.61,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
+                      color: const Color(0xFF2B2A2D),
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: const Color(0xFF111114),
+                        width: 5,
+                      ),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color.fromRGBO(0, 0, 0, 0.45),
+                          blurRadius: 18,
+                          spreadRadius: 3,
+                          offset: Offset(0, 8),
+                        ),
+                      ],
                     ),
-                    foregroundDecoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: AppColors.grayColor, width: 8),
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Stack(
-                      children: [
-                        if (_videoController.value.isInitialized)
-                          AnimatedBuilder(
-                            animation: _slideController,
-                            builder: (context, child) {
-                              final t = _slideController.value;
-                              final elapsedSeconds =
-                                  (_slideController.lastElapsedDuration?.inMilliseconds ?? 0) /
-                                  1000.0;
-                              final glitchTimeline = elapsedSeconds * 0.52;
-                              final glitchCycle = glitchTimeline % 1.0;
-                              final burstId = glitchTimeline.floor();
-                              final isGlitchBurst = glitchCycle > 0.9;
-                              if (isGlitchBurst && burstId != _lastGlitchBurstId) {
-                                _lastGlitchBurstId = burstId;
-                                _generateGlitchSlices(burstId);
-                              }
-                              final burstStrength = isGlitchBurst
-                                  ? ((glitchCycle - 0.9) / 0.1).clamp(0.0, 1.0)
-                                  : 0.0;
-                              final wave = math.sin(t * 2 * math.pi * 120);
-                              final frameJumpX = isGlitchBurst ? wave * 7 * burstStrength : 0.0;
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: ClipRect(
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: const Color.fromRGBO(255, 255, 255, 0.24),
+                              width: 2,
+                            ),
+                          ),
+                          child: Stack(
+                            children: [
+                              if (_videoController.value.isInitialized)
+                                AnimatedBuilder(
+                                  animation: _slideController,
+                                  builder: (context, child) {
+                                    final t = _slideController.value;
+                                    final elapsedSeconds =
+                                        (_slideController
+                                                .lastElapsedDuration
+                                                ?.inMilliseconds ??
+                                            0) /
+                                        1000.0;
+                                    final glitchTimeline =
+                                        elapsedSeconds * 0.52;
+                                    final glitchCycle = glitchTimeline % 1.0;
+                                    final burstId = glitchTimeline.floor();
+                                    final isGlitchBurst = glitchCycle > 0.9;
+                                    if (isGlitchBurst &&
+                                        burstId != _lastGlitchBurstId) {
+                                      _lastGlitchBurstId = burstId;
+                                      _generateGlitchSlices(burstId);
+                                    }
+                                    final burstStrength = isGlitchBurst
+                                        ? ((glitchCycle - 0.9) / 0.1).clamp(
+                                            0.0,
+                                            1.0,
+                                          )
+                                        : 0.0;
+                                    final wave = math.sin(
+                                      t * 2 * math.pi * 120,
+                                    );
+                                    final frameJumpX = isGlitchBurst
+                                        ? wave * 7 * burstStrength
+                                        : 0.0;
 
-                              Widget videoFrame() {
-                                return SizedBox(
-                                  width: double.infinity,
-                                  height: screenHeight,
-                                  child: Transform.translate(
-                                    offset: const Offset(-80, -10),
-                                    child: Transform.scale(
-                                      scale: 1.95,
-                                      child: FittedBox(
-                                        fit: BoxFit.cover,
-                                        child: SizedBox(
-                                          width: _videoController.value.size.width,
-                                          height: _videoController.value.size.height,
-                                          child: VideoPlayer(_videoController),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-
-                              return Stack(
-                                children: [
-                                  Transform.translate(
-                                    offset: Offset(frameJumpX, 0),
-                                    child: videoFrame(),
-                                  ),
-                                  if (isGlitchBurst)
-                                    ..._glitchSlices.map((slice) {
-                                      final stripJumpX =
-                                          math.sin((t * 2 * math.pi * slice.speed) + slice.phase) *
-                                          slice.maxOffset *
-                                          burstStrength;
-                                      return Positioned(
-                                        left: 0,
-                                        right: 0,
-                                        top: screenHeight * slice.topFraction,
-                                        height: screenHeight * slice.heightFraction,
-                                        child: ClipRect(
-                                          child: Opacity(
-                                            opacity: slice.opacity,
-                                            child: Transform.translate(
-                                              offset: Offset(stripJumpX, 0),
-                                              child: videoFrame(),
+                                    Widget videoFrame() {
+                                      return SizedBox(
+                                        width: double.infinity,
+                                        height: screenHeight,
+                                        child: Transform.translate(
+                                          offset: const Offset(-72, 8),
+                                          child: Transform.scale(
+                                            scale: 2.2,
+                                            child: FittedBox(
+                                              fit: BoxFit.cover,
+                                              child: SizedBox(
+                                                width: _videoController
+                                                    .value
+                                                    .size
+                                                    .width,
+                                                height: _videoController
+                                                    .value
+                                                    .size
+                                                    .height,
+                                                child: VideoPlayer(
+                                                  _videoController,
+                                                ),
+                                              ),
                                             ),
                                           ),
                                         ),
                                       );
-                                    }),
-                                  Positioned.fill(
-                                    child: IgnorePointer(
-                                      child: Transform.translate(
-                                        offset: Offset(frameJumpX, 0),
-                                        child: CustomPaint(
-                                          painter: _TvScanlinePainter(progress: t),
+                                    }
+
+                                    return Stack(
+                                      children: [
+                                        Transform.translate(
+                                          offset: Offset(frameJumpX, 0),
+                                          child: videoFrame(),
                                         ),
+                                        if (isGlitchBurst)
+                                          ..._glitchSlices.map((slice) {
+                                            final stripJumpX =
+                                                math.sin(
+                                                  (t *
+                                                          2 *
+                                                          math.pi *
+                                                          slice.speed) +
+                                                      slice.phase,
+                                                ) *
+                                                slice.maxOffset *
+                                                burstStrength;
+                                            return Positioned(
+                                              left: 0,
+                                              right: 0,
+                                              top:
+                                                  screenHeight *
+                                                  slice.topFraction,
+                                              height:
+                                                  screenHeight *
+                                                  slice.heightFraction,
+                                              child: ClipRect(
+                                                child: Opacity(
+                                                  opacity: slice.opacity,
+                                                  child: Transform.translate(
+                                                    offset: Offset(
+                                                      stripJumpX,
+                                                      0,
+                                                    ),
+                                                    child: videoFrame(),
+                                                  ),
+                                                ),
+                                              ),
+                                            );
+                                          }),
+                                        Positioned.fill(
+                                          child: IgnorePointer(
+                                            child: Transform.translate(
+                                              offset: Offset(frameJumpX, 0),
+                                              child: CustomPaint(
+                                                painter: _TvScanlinePainter(
+                                                  progress: t,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              Positioned(
+                                top: 14,
+                                right: 14,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    GlobalStorage().updateInSandbox(true);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const Sandbox(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: AppColors.secondaryColo,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: AppColors.grayColor,
+                                        width: 5,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-
-                        Positioned(
-                          top: screenHeight * 0.07,
-                          right: 24,
-                          child: GestureDetector(
-                            onTap: () {
-                              GlobalStorage().updateInSandbox(true);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const Sandbox(),
-                                ),
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppColors.secondaryColo,
-                                borderRadius: BorderRadius.circular(12),
-                                border: Border.all(
-                                  color: AppColors.grayColor,
-                                  width: 6,
-                                ),
-                              ),
-                              padding: const EdgeInsets.only(bottom: 0),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Image.asset(
-                                    'assets/images/sandboxIcon.png',
-                                    width: 144,
-                                    height: 144,
-                                    fit: BoxFit.contain,
-                                  ),
-                                  const SizedBox(height: 10),
-                                  const Text(
-                                    'Sandbox',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.w700,
+                                    padding: const EdgeInsets.only(bottom: 0),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Image.asset(
+                                          'assets/images/sandboxIcon.png',
+                                          width: 130,
+                                          height: 130,
+                                          fit: BoxFit.contain,
+                                        ),
+                                        const SizedBox(height: 8),
+                                        const Text(
+                                          'Sandbox',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
+                                ),
                               ),
-                            ),
+                            ],
                           ),
                         ),
-
-                        // Positioned(
-                        //   top: screenHeight * 0.07,
-                        //   left: 32,
-                        //   child: GestureDetector(
-                        //     onTap: () {
-                        //       GlobalStorage().updateInSandbox(false);
-                        //       Navigator.push(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //           builder: (context) => const Story(),
-                        //         ),
-                        //       );
-                        //     },
-                        //     child: Container(
-                        //       decoration: BoxDecoration(
-                        //         color: AppColors.secondaryColo,
-                        //         borderRadius: BorderRadius.circular(12),
-                        //         border: Border.all(
-                        //           color: AppColors.grayColor,
-                        //           width: 6,
-                        //         ),
-                        //       ),
-                        //       padding: const EdgeInsets.only(bottom: 40),
-                        //       child: Stack(
-                        //         alignment: Alignment.center,
-                        //         children: [
-                        //           Image.asset(
-                        //             'assets/images/mapIcon.png',
-                        //             width: 144,
-                        //             height: 144,
-                        //             fit: BoxFit.contain,
-                        //           ),
-                        //         ],
-                        //       ),
-                        //     ),
-                        //   ),
-                        // ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
 
-                Positioned(
-                  top: screenHeight * 0.038,
-                  child: Container(
-                    width: screenWidth * 0.51,
-                    height: screenHeight * 0.35,
-                    decoration: BoxDecoration(
-                      color: AppColors.secondaryColo,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: AppColors.grayColor, width: 8),
-                    ),
-                  ),
-                ),
-
-                Positioned(
-                  top: screenHeight * 0.1,
-                  left: screenWidth * 0.2609,
-                  child: Container(
-                    width: screenWidth * 0.015,
-                    height: screenHeight * 0.2,
-                    color: AppColors.secondaryColo,
-                  ),
-                ),
-
+                // Positioned(
+                //   top: screenHeight * 0.07,
+                //   left: 32,
+                //   child: GestureDetector(
+                //     onTap: () {
+                //       GlobalStorage().updateInSandbox(false);
+                //       Navigator.push(
+                //         context,
+                //         MaterialPageRoute(
+                //           builder: (context) => const Story(),
+                //         ),
+                //       );
+                //     },
+                //     child: Container(
+                //       decoration: BoxDecoration(
+                //         color: AppColors.secondaryColo,
+                //         borderRadius: BorderRadius.circular(12),
+                //         border: Border.all(
+                //           color: AppColors.grayColor,
+                //           width: 6,
+                //         ),
+                //       ),
+                //       padding: const EdgeInsets.only(bottom: 40),
+                //       child: Stack(
+                //         alignment: Alignment.center,
+                //         children: [
+                //           Image.asset(
+                //             'assets/images/mapIcon.png',
+                //             width: 144,
+                //             height: 144,
+                //             fit: BoxFit.contain,
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                // Logo stays in original positions below. Removed the old
+                // framing container so it sits directly on the scene.
                 Positioned(
                   top: -screenHeight * 0.05,
                   child: Image.asset(
@@ -447,17 +480,17 @@ class _TvScanlinePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final pulse = math.pow(
-      math.max(0.0, math.sin(progress * 2 * math.pi * 4.0)),
-      22,
-    ).toDouble();
+    final pulse = math
+        .pow(math.max(0.0, math.sin(progress * 2 * math.pi * 4.0)), 22)
+        .toDouble();
     final flicker =
         (math.sin(progress * 410) * 0.008) + (math.sin(progress * 833) * 0.006);
 
     if (flicker > 0) {
       canvas.drawRect(
         Offset.zero & size,
-        Paint()..color = Color.fromRGBO(255, 255, 255, flicker + (pulse * 0.045)),
+        Paint()
+          ..color = Color.fromRGBO(255, 255, 255, flicker + (pulse * 0.045)),
       );
     } else {
       canvas.drawRect(
@@ -467,7 +500,12 @@ class _TvScanlinePainter extends CustomPainter {
     }
 
     final scanlinePaint = Paint()
-      ..color = Color.fromRGBO(0, 0, 0, 0.26 + (math.sin(progress * 25) * 0.03));
+      ..color = Color.fromRGBO(
+        0,
+        0,
+        0,
+        0.26 + (math.sin(progress * 25) * 0.03),
+      );
     const scanlineStep = 5.0;
     for (double y = 0; y < size.height; y += scanlineStep) {
       canvas.drawRect(Rect.fromLTWH(0, y, size.width, 2), scanlinePaint);
@@ -475,7 +513,12 @@ class _TvScanlinePainter extends CustomPainter {
 
     final barCenter = (progress * size.height * 1.2) - (size.height * 0.1);
     final barHeight = size.height * 0.22;
-    final barRect = Rect.fromLTWH(0, barCenter - (barHeight / 2), size.width, barHeight);
+    final barRect = Rect.fromLTWH(
+      0,
+      barCenter - (barHeight / 2),
+      size.width,
+      barHeight,
+    );
     final barPaint = Paint()
       ..shader = const LinearGradient(
         begin: Alignment.topCenter,
@@ -516,7 +559,8 @@ class _TvScanlinePainter extends CustomPainter {
           ((progress * (1.3 + i * 0.33) + (i * 0.21)) % 1.0) * size.height;
       final bandHeight = 10.0 + (i * 6.0);
       final bandRect = Rect.fromLTWH(0, bandY, size.width, bandHeight);
-      final bandAlpha = 0.03 + (0.018 * math.sin((progress * 2 * math.pi * 4) + i));
+      final bandAlpha =
+          0.03 + (0.018 * math.sin((progress * 2 * math.pi * 4) + i));
       canvas.drawRect(
         bandRect,
         Paint()..color = Color.fromRGBO(255, 255, 255, bandAlpha.abs()),
@@ -527,10 +571,7 @@ class _TvScanlinePainter extends CustomPainter {
       ..shader = const RadialGradient(
         center: Alignment.center,
         radius: 0.95,
-        colors: [
-          Color.fromRGBO(0, 0, 0, 0.0),
-          Color.fromRGBO(0, 0, 0, 0.18),
-        ],
+        colors: [Color.fromRGBO(0, 0, 0, 0.0), Color.fromRGBO(0, 0, 0, 0.18)],
         stops: [0.65, 1.0],
       ).createShader(Offset.zero & size);
     canvas.drawRect(Offset.zero & size, vignette);
@@ -562,8 +603,12 @@ class _AmbientBackdropPainter extends CustomPainter {
       for (double x = 0; x <= size.width; x += 12) {
         final y =
             yBase +
-            math.sin((x / size.width * 2.6 * math.pi) + phase + (i * 0.55)) * 7 +
-            math.cos((x / size.width * 1.4 * math.pi) - (phase * 0.8) + (i * 0.3)) * 4;
+            math.sin((x / size.width * 2.6 * math.pi) + phase + (i * 0.55)) *
+                7 +
+            math.cos(
+                  (x / size.width * 1.4 * math.pi) - (phase * 0.8) + (i * 0.3),
+                ) *
+                4;
         if (x == 0) {
           path.moveTo(x, y);
         } else {
