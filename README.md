@@ -6,6 +6,14 @@ Sandbox for controlling a rover in a 3d scene with simple commands.
 
 App Demo: https://youtu.be/Bf5n60Z1Yp4?si=ithRc7_VueFua3NQ
 
+## Instructions
+1. Download the apk from this repository: "roverdriveflutter.apk"
+2. Open the file on an android device or emulator
+3. Install and open the app
+
+### Requirements
+- Android 8.0 or newer
+
 ## Scenes
 - **Main Menu:** App logo + animated rover video with button to enter Sandbox.
 - **Sandbox:** Create a chain of commands to control a rover. Click buttons to add them to a queue. Press execute to run your commands.
